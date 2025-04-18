@@ -19,9 +19,20 @@ def main():
         if err != None:
             print(f'Could not extract blocks from file "{arg}": {err}', file = sys.stderr)
             continue
-        blocks += [file_blocks]
+        blocks += file_blocks
 
-    print(blocks)
+    for block in blocks:
+        block.lines = expand_refs(block.lines, block.origin, blocks)
+
+    for block in blocks:
+        print('===============================')
+        print(f'name: {block.name}')
+        print(f'origin: {block.origin}')
+        print(f'export: {block.export}')
+        print(f'lines:')
+        for line in block.lines:
+            print(line)
+
 
 
 class source_block:
@@ -41,7 +52,7 @@ def extract_blocks(file_path):
         return(str(e), None)
 
     blocks = []
-    cur_block = source_block(origin = file_path)
+    cur_block = source_block(file_path, None, '', [])
     parser_state = None
     for line in file_lines:
         if ((parser_state == None and not re.match(r'^((`.+`)|\[.+\]\(.+\)):$', line)) or
@@ -65,7 +76,7 @@ def extract_blocks(file_path):
 
         if parser_state == 'In Block' and re.match(r'^```$', line):
             blocks += [cur_block]
-            cur_block = source_block(origin = file_path)
+            cur_block = source_block(file_path, None, '', [])
             parser_state = None
             continue
 
@@ -76,6 +87,40 @@ def extract_blocks(file_path):
 
 
     return (None, blocks)
+
+
+def expand_refs(cur_lines, origin, blocks):
+    new_lines = []
+    for line in cur_lines:
+        if not re.match(r'^.*<<<.+>>>.*$', line):
+            new_lines += [line]
+            continue
+
+        from_file = origin
+        from_name = re.search(r'(?<=\<\<\<).+?(?=\>\>\>)', line).group(0)
+        if '@' in from_name:
+            from_file = from_name.split('@')[1]
+            from_name = from_name.split('@')[0]
+
+        prefix = line.split('<<<')[0]
+        if re.match(r'^<<<.+>>>.*$', line):
+            prefix = ''
+        suffix = line.split('>>>')[1]
+        if re.match(r'.*<<<.+>>>$', line):
+            suffix = ''
+
+        for block in blocks:
+            if not (block.origin == from_file and block.name == from_name):
+                continue
+
+            for ref_line in expand_refs(block.lines, block.origin, blocks):
+                if ref_line == '':
+                    new_lines += ['']
+                    continue
+
+                new_lines += [prefix + ref_line + suffix]
+
+    return new_lines
 
 
 if __name__ == '__main__':
