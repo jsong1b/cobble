@@ -59,8 +59,8 @@ def extract_blocks(file_path):
                 cur_block.name = line[1:-2]
             else:
                 match = line.split('](')
-                cur_block.export = match[0][1:]
-                cur_block.name = match[1][:-2]
+                cur_block.export = match[1][:-2]
+                cur_block.name = match[0][1:]
 
             parser_state = 'Named'
             continue
