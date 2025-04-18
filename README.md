@@ -1,2 +1,7 @@
-# cobble
-Tools for literate programming.
+# Cobble
+
+A tool for literate programming.
+
+## Documents
+
+- [./literate/project.md](Project Setup)
