@@ -1,0 +1,7 @@
+This is an example file showcasing how Cobble exports
+
+This is an example block that is not exported to a file.
+
+prefix: This is an example block that is not exported to a file.
+
+This is a block from another file. :suffix

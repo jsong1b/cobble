@@ -22,17 +22,12 @@ def main():
         blocks += file_blocks
 
     for block in blocks:
+        if block.export == None: continue
         block.lines = expand_refs(block.lines, block.origin, blocks)
-
-    for block in blocks:
-        print('===============================')
-        print(f'name: {block.name}')
-        print(f'origin: {block.origin}')
-        print(f'export: {block.export}')
-        print(f'lines:')
-        for line in block.lines:
-            print(line)
-
+        print(f'Writing to "{block.export}"...')
+        with open(block.export, 'w') as file:
+            for line in block.lines:
+                file.write(line + '\n')
 
 
 class source_block:
