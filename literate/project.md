@@ -33,10 +33,8 @@ the Markdown documents in `literate/` and builds the Go projects.
 #!/usr/bin/env sh
 
 cd "$(dirname $(realpath $0))"
+sleep 0.05
 ../bootstrap/bootstrap.py *.md
 
-sleep 0.05
-
-# TODO(shell): Add backend
-# cd "$(dirname $(realpath $0)/../"
+<<<Build Cobble@cobble.md>>>
 ```
