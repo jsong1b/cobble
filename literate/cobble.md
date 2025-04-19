@@ -27,7 +27,8 @@ func main() {
 }
 ```
 
-Here is what is expanded into [project.md](project.md) to build the backend.
+Here is what is expanded into
+[project.md's Build Script](project.md#Build Script) to build the backend.
 
 `Build Cobble`:
 ```sh
